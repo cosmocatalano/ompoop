@@ -37,18 +37,74 @@
 <body>
 	<p>
 		<b id="x">How many</b> 
-		<small>or</small>
-		<b id="y">How many</b> 
+		<!-- <small>or</small>
+		<b id="y">How many</b>  -->
 		Days until <a href="https://www.omloophetnieuwsblad.be/en">Omloop</a>
 	</p>
-	<p><small>(not sure when in 2025 yet)</small></p>
+	<p><small>(this assumes it's the last Satuday in February)</small></p>
 	<script>
+
+		//returns the last Saturday in feb 
+		function lastSatInFeb(year) {
+			//gets the last day in Feb for a given year
+			//NB: the 2 in the Date() value here actually indicates March, because months start counting at 0
+			//HOWEVER days of the month start counting at 1, so 0 is acually the last day of the previous month (which is Feb) 🙄
+			let lastDay = new Date(year, 2, 0);
+
+			//assining an output variable to make the linter happy
+			let lastSat;
+
+			//get the day-of-week number for the date value 
+			let dayOffset = lastDay.getDay();
+
+			//if the lastday is a Saturday we're good
+			if (dayOffset === 6) {
+				lastSat = lastDay;
+			} else {
+				//use the day-of-the-week value to offest back from the end of the month
+				//adding one to account for days-of-week counting 0-6(Sun-Sat)
+				lastSat = new Date(year, 2, -(dayOffset + 1));
+
+			}
+
+			//return the Date object
+			return lastSat;
+		}
+
+		//checks what year to use to return the 
+		function getNextOmloop() {
+			// Get the current date
+			const rightNow = new Date();
+
+			//assume next calednar year because that is more likely
+			let nextYear = 1;
+
+			//get this year's last Saturday in Feb
+			let currentYearLastFebSat = lastSatInFeb(rightNow.getYear);
+
+			// check for Feb 
+			if (rightNow.getMonth() === 1) {
+				//get the last Saturday in Feb for the current year
+				if (rightNow.getDate() < currentYearLastFebSat.getDate()) {
+					let nextYear = 0;
+				} 
+			} else {
+				//already passe the Feb test, so if it's not Jan, we use next year this year
+				if (rightNow.getMonth() === 0) {
+					let nextYear = 0;
+				} 
+			}
+			// if we're a next-calendar-year Omloop, add 1
+			nextOmloop = lastSatInFeb(currentYearLastFebSat + nextYear);
+			
+			//return date
+			return nextOmloop;
+		}
+
 		let x = document.getElementById("x");
 		let y = document.getElementById("y");
 		let a = Math.ceil(Math.abs(new Date() - new Date('2025-02-21')) / 86400000);
-		let b = Math.ceil(Math.abs(new Date() - new Date('2025-02-28')) / 86400000);
 		x.innerHTML = `${a}`;
-		y.innerHTML = `${b}`;
 		// document.title = `${a} Days until Omloop`;
 	</script>
 </body>
