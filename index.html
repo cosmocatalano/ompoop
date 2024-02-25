@@ -42,60 +42,68 @@
 		Days until <a href="https://www.omloophetnieuwsblad.be/en">Omloop</a>
 	</p>
 	<p><small>(this assumes it's the last Satuday in February)</small></p>
+	
 	<script>
 
 		//returns the last Saturday in feb 
 		function lastSatInFeb(year) {
 			//gets the last day in Feb for a given year
 			//NB: the 2 in the Date() value here actually indicates March, because months start counting at 0
-			//HOWEVER days of the month start counting at 1, so 0 is acually the last day of the previous month (which is Feb) 🙄
+			//HOWEVER days of the month start counting at 1, so 0 is acually the last day of the previous month 🙄
 			let lastDay = new Date(year, 2, 0);
 
 			//assining an output variable to make the linter happy
 			let lastSat;
 
-			//get the day-of-week number for the date value 
+			//get the day-of-week number for the last-day-in-Feb value 
 			let dayOffset = lastDay.getDay();
 
-			//if the lastday is a Saturday we're good
+			//if that day-of-week number is 6 (Saturday) we're good
 			if (dayOffset === 6) {
 				lastSat = lastDay;
 			} else {
-				//use the day-of-the-week value to offest back from the end of the month
-				//adding one to account for days-of-week counting 0-6(Sun-Sat)
+				//use the day-of-the-week value to count back from end-of-month to the previous Saturday
+				//adding 1 to account for days-of-week counting (which starts from 0 = Sunday)
+				//e.g. if the last day is Tuesday (day-of-week value 3), count back 4 days to the previous Saturday
 				lastSat = new Date(year, 2, -(dayOffset + 1));
 
 			}
 
-			//return the Date object
+			//return the Date object for the last Saturday in Feb
 			return lastSat;
 		}
 
-		//checks what year to use to return the 
+		//checks what year to use to return the last Saturday in feb
 		function getNextOmloop() {
 			// Get the current date
 			const rightNow = new Date();
+			console.log("rightNow is: " + rightNow)
 
-			//assume next calednar year because that is more likely
+			//Set variable for whether or not to use this year's or next year's last Sat in Feb
+			//start with the liklier default od next calendar year
 			let nextYear = 1;
 
-			//get this year's last Saturday in Feb
-			let currentYearLastFebSat = lastSatInFeb(rightNow.getYear);
+			//get this year's last Saturday in Feb as a Date object
+			let currentYearLastFebSat = lastSatInFeb(rightNow.getFullYear());
+			console.log("currentYearLastFebSat is: " + currentYearLastFebSat)
+			console.log(typeof currentYearLastFebSat)
 
-			// check for Feb 
+			//if it's Februrary
 			if (rightNow.getMonth() === 1) {
-				//get the last Saturday in Feb for the current year
+				//compare day-of-month for last Saturday in February with current day-of-month
 				if (rightNow.getDate() < currentYearLastFebSat.getDate()) {
 					let nextYear = 0;
 				} 
 			} else {
-				//already passe the Feb test, so if it's not Jan, we use next year this year
+				//if it's January, add use this year's last date
 				if (rightNow.getMonth() === 0) {
 					let nextYear = 0;
 				} 
 			}
-			// if we're a next-calendar-year Omloop, add 1
-			nextOmloop = lastSatInFeb(currentYearLastFebSat + nextYear);
+			// if we're a next-calendar-year Omloop, add 1 to the Date year value 
+			nextOmloop = lastSatInFeb(currentYearLastFebSat.getFullYear() + nextYear);
+			console.log("nextOmloop is: " + nextOmloop)
+
 			
 			//return date
 			return nextOmloop;
@@ -103,7 +111,7 @@
 
 		let x = document.getElementById("x");
 		let y = document.getElementById("y");
-		let a = Math.ceil(Math.abs(new Date() - new Date('2025-02-21')) / 86400000);
+		let a = Math.ceil(Math.abs(new Date() - getNextOmloop()) / 86400000);
 		x.innerHTML = `${a}`;
 		// document.title = `${a} Days until Omloop`;
 	</script>
