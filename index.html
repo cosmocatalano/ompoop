@@ -45,52 +45,51 @@
 	
 	<script>
 
-		//returns the last Saturday in feb 
+		// returns the last Saturday in feb 
 		function lastSatInFeb(year) {
-			//gets the last day in Feb for a given year
-			//NB: the 2 in the Date() value here actually indicates March, because months start counting at 0
-			//HOWEVER days of the month start counting at 1, so 0 is acually the last day of the previous month 🙄
+			// gets the last day in Feb for a given year
+			// NB: the 2 in the Date() value here actually indicates March, because the month-of-year value starts at 0 = January
+			// HOWEVER days of the month start counting at 1, so 0 is acually the last day of the previous month 🙄
 			let lastDay = new Date(year, 2, 0);
 
-			//assining an output variable to make the linter happy
+			// assining an output variable to make the linter happy
 			let lastSat;
 
-			//get the day-of-week number for the last-day-in-Feb value 
+			// get the day-of-week number for the last-day-in-Feb value 
 			let dayOffset = lastDay.getDay();
 
-			//if that day-of-week number is 6 (Saturday) we're good
+			// if that day-of-week number is 6 (Saturday) we're good
 			if (dayOffset === 6) {
 				lastSat = lastDay;
 			} else {
-				//use the day-of-the-week value to count back from end-of-month to the previous Saturday
-				//adding 1 to account for days-of-week counting (which starts from 0 = Sunday)
-				//e.g. if the last day is Tuesday (day-of-week value 3), count back 4 days to the previous Saturday
+				// use the day-of-the-week value to count back from end-of-month to the previous Saturday
+				// adding 1 to account for days-of-week counting (which starts from 0 = Sunday)
+				// e.g. if the last day is Tuesday (day-of-week value 3), count back 4 days to the previous Saturday
 				lastSat = new Date(year, 2, -(dayOffset + 1));
-
 			}
 
 			//return the Date object for the last Saturday in Feb
 			return lastSat;
 		}
 
-		//checks what year to use to return the last Saturday in feb
-		//feeds that to lastSatInFeb to generate the next Omloop date
+		// checks what year to use to return the last Saturday in feb
+		// feeds that to lastSatInFeb to generate the next Omloop date
 		function getNextOmloop() {
-			//Get the current date
+			// Get the current date
 			const rightNow = new Date();
 
-			//Set variable for whether or not to use this year's or next year's last Saturday in Feb date
-			//default to likelier option of next calendar-year
+			// Set variable for whether or not to use this year's or next year's last Saturday in Feb date
+			// default to likelier option of next calendar-year
 			let nextYear = 1;
 
-			//if current date is in Februrary (month-of-year value of 1)
+			// if current date is in Februrary (month-of-year value of 1)
 			if (rightNow.getMonth() === 1) {
 
-				//get this calendar-year's last Saturday in Feb as a Date object
+				// get this calendar-year's last Saturday in Feb as a Date object
 				let currentYearLastFebSat = lastSatInFeb(rightNow.getFullYear());
 
-				//compare current day-of-month with day-of-month for last Saturday in February
-				//if current day-of-month is before the this calendar-year's Omloop date, use this year
+				// compare current day-of-month with day-of-month for last Saturday in February
+				// if current day-of-month is before the this calendar-year's Omloop date, use this year
 				if (rightNow.getDate() < currentYearLastFebSat.getDate()) {
 					let nextYear = 0;
 				} 
@@ -102,7 +101,7 @@
 			}
 
 			// get next Omloop date value
-			// if we're a next-calendar-year Omloop, add 1 to the Date year value 
+			// if we're a next-calendar-year Omloop, add 1 to the current Date year value 
 			nextOmloop = lastSatInFeb(rightNow.getFullYear() + nextYear);
 			
 			//return date
@@ -113,7 +112,7 @@
 		//let y = document.getElementById("y");
 		let a = Math.ceil(Math.abs(new Date() - getNextOmloop()) / 86400000);
 		x.innerHTML = `${a}`;
-		// document.title = `${a} Days until Omloop`;
+		//document.title = `${a} Days until Omloop`;
 	</script>
 </body>
 
