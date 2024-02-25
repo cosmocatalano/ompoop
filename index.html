@@ -74,23 +74,23 @@
 		}
 
 		//checks what year to use to return the last Saturday in feb
+		//feeds that to lastSatInFeb to generate the next Omloop date
 		function getNextOmloop() {
-			// Get the current date
+			//Get the current date
 			const rightNow = new Date();
-			console.log("rightNow is: " + rightNow)
 
-			//Set variable for whether or not to use this year's or next year's last Sat in Feb
-			//start with the liklier default od next calendar year
+			//Set variable for whether or not to use this year's or next year's last Saturday in Feb date
+			//default to likelier option of next calendar-year
 			let nextYear = 1;
 
-			//get this year's last Saturday in Feb as a Date object
-			let currentYearLastFebSat = lastSatInFeb(rightNow.getFullYear());
-			console.log("currentYearLastFebSat is: " + currentYearLastFebSat)
-			console.log(typeof currentYearLastFebSat)
-
-			//if it's Februrary
+			//if current date is in Februrary (month-of-year value of 1)
 			if (rightNow.getMonth() === 1) {
-				//compare day-of-month for last Saturday in February with current day-of-month
+
+				//get this calendar-year's last Saturday in Feb as a Date object
+				let currentYearLastFebSat = lastSatInFeb(rightNow.getFullYear());
+
+				//compare current day-of-month with day-of-month for last Saturday in February
+				//if current day-of-month is before the this calendar-year's Omloop date, use this year
 				if (rightNow.getDate() < currentYearLastFebSat.getDate()) {
 					let nextYear = 0;
 				} 
@@ -100,17 +100,17 @@
 					let nextYear = 0;
 				} 
 			}
-			// if we're a next-calendar-year Omloop, add 1 to the Date year value 
-			nextOmloop = lastSatInFeb(currentYearLastFebSat.getFullYear() + nextYear);
-			console.log("nextOmloop is: " + nextOmloop)
 
+			// get next Omloop date value
+			// if we're a next-calendar-year Omloop, add 1 to the Date year value 
+			nextOmloop = lastSatInFeb(rightNow.getFullYear() + nextYear);
 			
 			//return date
 			return nextOmloop;
 		}
 
 		let x = document.getElementById("x");
-		let y = document.getElementById("y");
+		//let y = document.getElementById("y");
 		let a = Math.ceil(Math.abs(new Date() - getNextOmloop()) / 86400000);
 		x.innerHTML = `${a}`;
 		// document.title = `${a} Days until Omloop`;
