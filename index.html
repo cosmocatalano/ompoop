@@ -74,9 +74,10 @@
 
 		// checks what year to use to return the last Saturday in feb
 		// feeds that to lastSatInFeb to generate the next Omloop date
-		function getNextOmloop() {
+		function getNextOmloop(dateObject) {
+
 			// Get the current date
-			const rightNow = new Date();
+			const rightNow = dateObject;
 
 			// Set variable for whether or not to use this year's or next year's last Saturday in Feb date
 			// default to likelier option of next calendar-year
@@ -91,26 +92,36 @@
 				// compare current day-of-month with day-of-month for last Saturday in February
 				// if current day-of-month is before the this calendar-year's Omloop date, use this year
 				if (rightNow.getDate() < currentYearLastFebSat.getDate()) {
-					let nextYear = 0;
+					nextYear = 0;
 				} 
 			} else {
 				//if it's January, add use this year's last date
 				if (rightNow.getMonth() === 0) {
-					let nextYear = 0;
+					console.log("is Jan")
+					nextYear = 0;
 				} 
 			}
 
 			// get next Omloop date value
 			// if we're a next-calendar-year Omloop, add 1 to the current Date year value 
 			nextOmloop = lastSatInFeb(rightNow.getFullYear() + nextYear);
+
+			//final check for the pre-Feb 24 dates, which seems to bump the race forward to March
+			if (nextOmloop.getDate() < 24) {
+				//set the date to 7 days in the future (e.g. March 1 or 2)
+				nextOmloop.setDate(nextOmloop.getDate() + 7);
+			} 
 			
 			//return date
 			return nextOmloop;
 		}
 
+		// get a single value for the current time
+		let dateRightNow = new Date();
+
 		let x = document.getElementById("x");
 		//let y = document.getElementById("y");
-		let a = Math.ceil(Math.abs(new Date() - getNextOmloop()) / 86400000);
+		let a = Math.ceil(Math.abs( dateRightNow - getNextOmloop( dateRightNow )) / 86400000);
 		x.innerHTML = `${a}`;
 		//document.title = `${a} Days until Omloop`;
 	</script>
